@@ -7,8 +7,6 @@ use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
-
-
 Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
     Route::prefix('hospitals')->group(function () {
         Route::get('/', [HospitalController::class, 'index']);
@@ -24,17 +22,14 @@ Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
         Route::put('/{id}', [DoctorController::class, 'update']);
         Route::delete('/{id}', [DoctorController::class, 'destroy']);
     });
+
+    Route::delete('/patients/{id}', [PatientController::class, 'destroy']);
+    Route::get('/patients', [PatientController::class, 'index']);
+    Route::get('/patients/{id}', [PatientController::class, 'show']);
 });
 
-Route::middleware(['auth:sanctum', 'patientmid'])->group(function () {
-    
-});
 
-
-Route::prefix('patients')->group(function () {
-    Route::get('/', [PatientController::class, 'index']);
-    Route::get('/{id}', [PatientController::class, 'show']);
-    Route::post('/', [PatientController::class, 'store']);
-    Route::put('/{id}', [PatientController::class, 'update']);
-    Route::delete('/{id}', [PatientController::class, 'destroy']);
+Route::post('/patients', [PatientController::class, 'store']);
+Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
+    Route::put('/patients/{id}', [PatientController::class, 'update']);
 });

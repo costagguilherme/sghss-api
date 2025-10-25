@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\PatientService;
 use App\Http\Requests\PatientRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
@@ -39,6 +40,11 @@ class PatientController extends Controller
     public function update(PatientRequest $request, int $id): JsonResponse
     {
         $patient = $this->service->getById($id);
+        $user = Auth::user();
+        if ($user->role !== 'admin' && $user->id !== $patient->user_id) {
+            return $this->sendError('Acesso negado: você não pode atualizar este paciente', 403);
+        }
+
         if (empty($patient)) {
             return $this->sendError('Patient not found', 404);
         }
