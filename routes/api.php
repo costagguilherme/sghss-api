@@ -10,15 +10,16 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::middleware(['auth:sanctum', 'patientmid'])->group(function () {
-    Route::prefix('doctors')->group(function () {
-        Route::get('/', [DoctorController::class, 'index']);
-        Route::get('/{id}', [DoctorController::class, 'show']);
-        Route::post('/', [DoctorController::class, 'store']);
-        Route::put('/{id}', [DoctorController::class, 'update']);
-        Route::delete('/{id}', [DoctorController::class, 'destroy']);
-    });
+
 });
 
+Route::prefix('doctors')->group(function () {
+    Route::get('/', [DoctorController::class, 'index']);
+    Route::get('/{id}', [DoctorController::class, 'show']);
+    Route::post('/', [DoctorController::class, 'store']);
+    Route::put('/{id}', [DoctorController::class, 'update']);
+    Route::delete('/{id}', [DoctorController::class, 'destroy']);
+});
 
 
 

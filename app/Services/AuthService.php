@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    protected UserRepository $userRepository;
+    private UserRepository $userRepository;
+    private $roles = [RoleEnum::PATIENT->value, RoleEnum::ADMIN->value];
 
     public function __construct(UserRepository $userRepository)
     {
@@ -23,8 +24,8 @@ class AuthService
             throw new \Exception('Credenciais inválidas.', 401);
         }
 
-        if ($user->role !== RoleEnum::PATIENT->value) {
-            throw new \Exception('Usuário não autorizado para login como patient.', 400);
+        if (!in_array($user->role, $this->roles)) {
+            throw new \Exception('Usuário não possui a permissão para logar', 400);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
