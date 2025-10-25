@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
@@ -32,4 +33,12 @@ Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
 Route::post('/patients', [PatientController::class, 'store']);
 Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
     Route::put('/patients/{id}', [PatientController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
+    Route::prefix('appointments')->group(function () {
+        Route::post('/', [AppointmentController::class, 'schedule']);
+        Route::get('/{id}', [AppointmentController::class, 'getById']);
+        Route::delete('/{id}', [AppointmentController::class, 'cancel']);
+    });
 });

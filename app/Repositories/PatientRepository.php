@@ -16,6 +16,11 @@ class PatientRepository
         return Patient::find($id);
     }
 
+    public function getPatientByUserId(int $userId): ?Patient
+    {
+        return Patient::where('user_id', $userId)->first();
+    }
+
     public function create(array $data): Patient
     {
         return Patient::create($data);

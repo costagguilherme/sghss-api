@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 abstract class Controller
 {
@@ -24,5 +25,17 @@ abstract class Controller
         ];
 
         return response()->json($response, $code);
+    }
+
+    protected function getUserId(): int
+    {
+        $user = Auth::user();
+        return $user->id;
+    }
+
+    protected function getRole(): string
+    {
+        $user = Auth::user();
+        return $user->role;
     }
 }
