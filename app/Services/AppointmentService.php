@@ -4,23 +4,36 @@ namespace App\Services;
 
 use App\Repositories\AppointmentRepository;
 use App\Models\Appointment;
+use App\Repositories\HospitalRepository;
 use App\Repositories\PatientRepository;
+use App\Repositories\UserRepository;
 use App\Services\Externals\ZoomApi;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentService
 {
     private AppointmentRepository $repository;
     private PatientRepository $patientRepository;
+    private HospitalRepository $hospitalRepository;
+    private UserRepository $userRepository;
     private ZoomApi $zoomApi;
-    public function __construct(AppointmentRepository $repository, PatientRepository $patientRepository, ZoomApi $zoomApi)
-    {
+    public function __construct(
+        AppointmentRepository $repository,
+        PatientRepository $patientRepository,
+        HospitalRepository $hospitalRepository,
+        UserRepository $userRepository,
+
+        ZoomApi $zoomApi
+    ) {
         $this->repository = $repository;
         $this->patientRepository = $patientRepository;
+        $this->hospitalRepository = $hospitalRepository;
+        $this->userRepository = $userRepository;
         $this->zoomApi = $zoomApi;
     }
 
-    public function schedule(array $data): Appointment
+    public function schedule(array $data): array
     {
         if ($data['role'] == 'patient') {
             $patient = $this->patientRepository->getPatientByUserId($data['user_id']);
@@ -48,7 +61,13 @@ class AppointmentService
             $data['hospital_id'] = null;
         }
 
-        return $this->repository->create($data);
+        $appointment = $this->repository->create($data);
+        $this->sendCreatedAppointmentEmail($appointment);
+
+        $appointment = $appointment->toArray();
+        unset($appointment['doctor']);
+        unset($appointment['patient']);
+        return $appointment;
     }
 
     public function getUserAppointment(int $id, $user_id): ?Appointment
@@ -67,6 +86,52 @@ class AppointmentService
         if ($appointment->type == 'online') {
             $this->zoomApi->deleteMeeting($appointment->meeting_id);
         }
+
+        $this->sendCancelAppointmentEmail($appointment);
         $this->repository->delete($appointment);
+    }
+
+
+    private function sendCreatedAppointmentEmail(Appointment $appointment)
+    {
+        $messageText = "Olá, sua consulta foi agendada!\n\n";
+        $messageText .= "Data/Hora: {$appointment->scheduled_at}\n";
+        $doctor = $appointment->doctor;
+        $doctorName = $doctor->user->name ?? '';
+        $specialty = $doctor->specialty;
+
+        $messageText .= "Médico: {$doctorName}\n";
+        $messageText .= "Especialidade: {$specialty}\n";
+
+        if ($appointment->type === 'online') {
+            $messageText .= "Tipo: Online\n";
+            $messageText .= "Link para participar: {$appointment->join_url}\n";
+        } else {
+            $hospitalName = $appointment->hospital->name ?? 'Não definido';
+            $messageText .= "Tipo: Presencial\n";
+            $messageText .= "Local: {$hospitalName}\n";
+        }
+
+        $user = $appointment->patient->user ?? null;
+        if ($user) {
+            Mail::raw($messageText, function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('SGHSS: CONSULTA AGENDADA');
+            });
+        }
+    }
+
+    private function sendCancelAppointmentEmail(Appointment $appointment)
+    {
+        $doctor = $appointment->doctor;
+        $messageText = "Olá, sua consulta com o médico(a) {$doctor->user->name} ({$doctor->specialty}) que estava agenda para {$appointment->scheduled_at} foi cancelada!\n\n";
+
+        $user = $appointment->patient->user ?? null;
+        if ($user) {
+            Mail::raw($messageText, function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('SGHSS: CONSULTA CANCELADA');
+            });
+        }
     }
 }

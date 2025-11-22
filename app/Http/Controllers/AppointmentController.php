@@ -37,7 +37,7 @@ class AppointmentController extends Controller
         try {
             $data = array_merge($request->all(), ['user_id' => $this->getUserId(), 'role' => $this->getRole()]);
             $appointment = $this->service->schedule($data);
-            return $this->sendSucess($appointment->toArray(), 'Consulta marcada com sucesso', 201);
+            return $this->sendSucess($appointment, 'Consulta marcada com sucesso', 201);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 400);
         }

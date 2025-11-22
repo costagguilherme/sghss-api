@@ -12,4 +12,9 @@ class Doctor extends Model
         'crm',
         'specialty',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
