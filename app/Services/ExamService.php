@@ -81,7 +81,7 @@ class ExamService
     {
         return $this->repository->update($id, [
             'report' => $report,
-            'status' => 'completed'
+            'status' => 'finished'
         ]);
     }
 

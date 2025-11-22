@@ -62,7 +62,7 @@ class AppointmentController extends Controller
     public function status(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,confirmed,rejected, canceled'
+            'status' => 'required|in:pending,confirmed,rejected,canceled,finished'
         ]);
 
         $appointment = $this->service->setStatus($id, $validated['status']);

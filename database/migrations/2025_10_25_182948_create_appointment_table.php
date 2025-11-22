@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('recommendations')->nullable(); // recomendações gerais
             $table->text('certificate')->nullable(); // atestado medico
             $table->text('requested_exams')->nullable(); // exames solicitados
-            $table->enum('status', ['pending', 'confirmed', 'rejected', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'rejected', 'canceled', 'finished'])->default('pending');
             $table->timestamps();
         });
     }
