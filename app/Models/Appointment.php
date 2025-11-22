@@ -11,9 +11,11 @@ class Appointment extends Model
         'patient_id',
         'hospital_id',
         'type',
-        'conference_link',
+        'meeting_id',
+        'join_url',
+        'start_url',
         'scheduled_at',
     ];
 
-    protected $dates = ['scheduled_at']; 
+    protected $dates = ['scheduled_at'];
 }

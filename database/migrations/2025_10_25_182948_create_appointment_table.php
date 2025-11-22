@@ -12,9 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('doctor_id')->constrained('doctors')->onDelete('cascade');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
-            $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
+            $table->foreignId('hospital_id')->nullable()->constrained('hospitals')->onDelete('cascade');
             $table->enum('type', ['in_person', 'online']);
-            $table->string('conference_link')->nullable();
+            $table->string('meeting_id')->nullable();
+            $table->text('start_url')->nullable();
+            $table->string('join_url')->nullable();
             $table->dateTime('scheduled_at');
             $table->timestamps();
         });
