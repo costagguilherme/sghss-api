@@ -13,6 +13,7 @@ class Exam extends Model
         'scheduled_at',
         'report',
         'result_file',
+        'status',
     ];
 
     public function hospital()

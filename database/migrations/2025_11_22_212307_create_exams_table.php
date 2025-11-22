@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('scheduled_at')->nullable();
             $table->text('report')->nullable();
             $table->string('result_file')->nullable();
+            $table->enum('status', ['pending', 'confirmed', 'rejected', 'canceled'])->default('pending');
             $table->timestamps();
         });
     }

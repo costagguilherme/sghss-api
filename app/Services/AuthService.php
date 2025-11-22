@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthService
 {
     private UserRepository $userRepository;
-    private $roles = [RoleEnum::PATIENT->value, RoleEnum::ADMIN->value];
+    private $roles = [RoleEnum::PATIENT->value, RoleEnum::ADMIN->value, RoleEnum::DOCTOR->value];
 
     public function __construct(UserRepository $userRepository)
     {

@@ -64,6 +64,12 @@ class AppointmentService
         return $appointment;
     }
 
+    public function getAll(int $user_id)
+    {
+        $patient = $this->patientRepository->getPatientByUserId($user_id);
+        return $this->repository->getAll($patient->id);
+    }
+
     public function getUserAppointment(int $id, $user_id): ?Appointment
     {
         $patient = $this->patientRepository->getPatientByUserId($user_id);

@@ -15,6 +15,12 @@ class AppointmentController extends Controller
         $this->service = $service;
     }
 
+    public function getAll(): JsonResponse
+    {
+        $appointments = $this->service->getAll($this->getUserId());
+        return $this->sendSucess($appointments->toArray(), 'Consultas encontradas');
+    }
+
     public function getById(int $id): JsonResponse
     {
         $appointment = $this->service->getUserAppointment($id, $this->getUserId());

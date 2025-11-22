@@ -28,10 +28,8 @@ Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
     Route::get('/patients', [PatientController::class, 'index']);
     Route::get('/patients/{id}', [PatientController::class, 'show']);
 
-
     Route::put('/appointments/{id}/status', [AppointmentController::class, 'status']);
 });
-
 
 Route::post('/patients', [PatientController::class, 'store']);
 Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
@@ -41,12 +39,12 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
 Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
     Route::prefix('appointments')->group(function () {
         Route::post('/', [AppointmentController::class, 'schedule']);
+        Route::get('/', [AppointmentController::class, 'getAll']);
         Route::get('/{id}', [AppointmentController::class, 'getById']);
         Route::delete('/{id}', [AppointmentController::class, 'cancel']);
     });
 });
 
-
-
-
-Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
+Route::middleware(['auth:sanctum', 'doctormid'])->group(function () {
+    Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
+});

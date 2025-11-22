@@ -11,6 +11,11 @@ class AppointmentRepository
         return Appointment::find($id);
     }
 
+    public function getAll($patientId)
+    {
+        return Appointment::where('patient_id', $patientId)->get();
+    }
+
     public function findByIdAndPatient(int $id, int $patientId): ?Appointment
     {
         $query = Appointment::where('id', $id)->where('patient_id', $patientId);

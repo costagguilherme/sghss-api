@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\RoleAdminMiddleware;
+use App\Http\Middleware\RoleDoctorMiddleware;
 use App\Http\Middleware\RolePatientAdminMiddleware;
 use App\Http\Middleware\RolePatientMiddleware;
 use Illuminate\Foundation\Application;
@@ -19,7 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'patientmid' => RolePatientMiddleware::class,
             'adminmid' => RoleAdminMiddleware::class,
-            'patientadminmid' => RolePatientAdminMiddleware::class
+            'patientadminmid' => RolePatientAdminMiddleware::class,
+            'doctormid' => RoleDoctorMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
