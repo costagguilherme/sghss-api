@@ -18,10 +18,11 @@ return new class extends Migration
             $table->text('start_url')->nullable();
             $table->string('join_url')->nullable();
             $table->dateTime('scheduled_at');
-            $table->text('medical_notes')->nullable();
-            $table->text('prescription')->nullable();
-            $table->text('recommendations')->nullable();
-            $table->text('certificate')->nullable(); 
+            $table->text('medical_notes')->nullable(); // anotações gerais
+            $table->text('prescription')->nullable(); // prescrição de medicamentos
+            $table->text('recommendations')->nullable(); // recomendações gerais
+            $table->text('certificate')->nullable(); // atestado medico
+            $table->text('requested_exams')->nullable(); // exames solicitados
             $table->timestamps();
         });
     }

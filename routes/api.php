@@ -44,4 +44,4 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
 });
 
 
-Route::post('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
+Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);

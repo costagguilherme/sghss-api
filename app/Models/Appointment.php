@@ -19,6 +19,7 @@ class Appointment extends Model
         'prescription',
         'recommendations',
         'certificate',
+        'requested_exams'
     ];
 
     protected $dates = ['scheduled_at'];

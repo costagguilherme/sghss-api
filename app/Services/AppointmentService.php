@@ -102,6 +102,10 @@ class AppointmentService
             $appointment->recommendations = $data['recommendations'];
         }
 
+        if (isset($data['requested_exams'])) {
+            $appointment->requested_exams = $data['requested_exams'];
+        }
+
         if (isset($data['certificate'])) {
             $appointment->certificate = $data['certificate'];
         }
