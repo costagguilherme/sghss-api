@@ -52,6 +52,10 @@ class ExamService
         $data['status'] = 'pending';
         $exam = $this->repository->create($data);
         $this->sendCreatedExamEmail($exam);
+        $exam = $exam->toArray();
+        unset($exam['doctor']);
+        unset($exam['hospital']);
+        unset($exam['patient']);
         return $exam;
     }
 

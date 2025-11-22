@@ -44,7 +44,7 @@ class ExamController extends Controller
         try {
             $data = array_merge($validated, ['user_id' => $this->getUserId(), 'role' => $this->getRole()]);
             $exam = $this->service->schedule($data);
-            return $this->sendSucess($exam->toArray(), 'Exame criado com sucesso', 201);
+            return $this->sendSucess($exam, 'Exame criado com sucesso', 201);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 400);
         }
