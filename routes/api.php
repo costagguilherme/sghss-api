@@ -27,6 +27,9 @@ Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
     Route::delete('/patients/{id}', [PatientController::class, 'destroy']);
     Route::get('/patients', [PatientController::class, 'index']);
     Route::get('/patients/{id}', [PatientController::class, 'show']);
+
+
+    Route::put('/appointments/{id}/status', [AppointmentController::class, 'status']);
 });
 
 
@@ -42,6 +45,8 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
         Route::delete('/{id}', [AppointmentController::class, 'cancel']);
     });
 });
+
+
 
 
 Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);

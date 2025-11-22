@@ -49,8 +49,21 @@ class AppointmentController extends Controller
         if (empty($appointment)) {
             return $this->sendError('Consulta não encontrada', 404);
         }
-        $this->service->cancel($id);
-        return $this->sendSucess([], 'Consulta cancelada com sucesso');
+        $appointment = $this->service->cancel($id);
+        return $this->sendSucess($appointment->toArray(), 'Consulta cancelada com sucesso');
+    }
+
+    public function status(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,confirmed,rejected, canceled'
+        ]);
+
+        $appointment = $this->service->setStatus($id, $validated['status']);
+        if (empty($appointment)) {
+            return $this->sendError('Consulta não encontrada', 404);
+        }
+        return $this->sendSucess($appointment->toArray(), 'Status definido com sucesso');
     }
 
     public function medicalInfo(Request $request, int $id): JsonResponse

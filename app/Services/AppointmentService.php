@@ -74,7 +74,7 @@ class AppointmentService
         return $appointment;
     }
 
-    public function cancel(int $id): void
+    public function cancel(int $id): Appointment
     {
         $appointment = $this->repository->findById($id);
         if ($appointment->type == 'online') {
@@ -82,7 +82,9 @@ class AppointmentService
         }
 
         $this->sendCancelAppointmentEmail($appointment);
-        $this->repository->delete($appointment);
+        $appointment->status = 'canceled';
+        $appointment->save();
+        return $appointment;
     }
 
     public function medicalInfo(int $appointmentId, array $data): ?Appointment
@@ -115,9 +117,21 @@ class AppointmentService
         return $appointment;
     }
 
+    public function setStatus(int $id, string $status)
+    {
+        $appointment = $this->repository->findById($id);
+        if (empty($appointment)) {
+            return null;
+        }
+        $appointment->status = $status;
+        $appointment->save();
+        $this->sendApprovedAppointmentEmail($appointment);
+        return $appointment;
+    }
+
     private function sendCreatedAppointmentEmail(Appointment $appointment)
     {
-        $messageText = "Olá, sua consulta foi agendada!\n\n";
+        $messageText = "Olá, sua solicitação de consulta foi enviada. Aguarde a confirmação!\n\n";
         $messageText .= "Data/Hora: {$appointment->scheduled_at}\n";
         $doctor = $appointment->doctor;
         $doctorName = $doctor->user->name ?? '';
@@ -144,10 +158,39 @@ class AppointmentService
         }
     }
 
+    private function sendApprovedAppointmentEmail(Appointment $appointment)
+    {
+        $messageText = "Olá, sua consulta foi confirmada!\n\n";
+        $messageText .= "Data/Hora: {$appointment->scheduled_at}\n";
+        $doctor = $appointment->doctor;
+        $doctorName = $doctor->user->name ?? '';
+        $specialty = $doctor->specialty;
+
+        $messageText .= "Médico: {$doctorName}\n";
+        $messageText .= "Especialidade: {$specialty}\n";
+
+        if ($appointment->type === 'online') {
+            $messageText .= "Tipo: Online\n";
+            $messageText .= "Link para participar: {$appointment->join_url}\n";
+        } else {
+            $hospitalName = $appointment->hospital->name ?? 'Não definido';
+            $messageText .= "Tipo: Presencial\n";
+            $messageText .= "Local: {$hospitalName}\n";
+        }
+
+        $user = $appointment->patient->user ?? null;
+        if ($user) {
+            Mail::raw($messageText, function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('SGHSS: CONSULTA CONFIRMADA');
+            });
+        }
+    }
+
     private function sendCancelAppointmentEmail(Appointment $appointment)
     {
         $doctor = $appointment->doctor;
-        $messageText = "Olá, sua consulta com o médico(a) {$doctor->user->name} ({$doctor->specialty}) que estava agenda para {$appointment->scheduled_at} foi cancelada!\n\n";
+        $messageText = "Olá, sua consulta com o médico(a) {$doctor->user->name} ({$doctor->specialty}) que estava agendada para às {$appointment->scheduled_at} foi cancelada!\n\n";
 
         $user = $appointment->patient->user ?? null;
         if ($user) {
