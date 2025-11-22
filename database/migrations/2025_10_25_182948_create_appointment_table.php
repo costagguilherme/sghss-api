@@ -18,6 +18,10 @@ return new class extends Migration
             $table->text('start_url')->nullable();
             $table->string('join_url')->nullable();
             $table->dateTime('scheduled_at');
+            $table->text('medical_notes')->nullable();
+            $table->text('prescription')->nullable();
+            $table->text('recommendations')->nullable();
+            $table->text('certificate')->nullable(); 
             $table->timestamps();
         });
     }

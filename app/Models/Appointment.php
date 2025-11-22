@@ -15,6 +15,10 @@ class Appointment extends Model
         'join_url',
         'start_url',
         'scheduled_at',
+        'medical_notes',
+        'prescription',
+        'recommendations',
+        'certificate',
     ];
 
     protected $dates = ['scheduled_at'];

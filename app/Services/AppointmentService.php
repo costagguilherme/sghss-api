@@ -15,21 +15,15 @@ class AppointmentService
 {
     private AppointmentRepository $repository;
     private PatientRepository $patientRepository;
-    private HospitalRepository $hospitalRepository;
-    private UserRepository $userRepository;
     private ZoomApi $zoomApi;
     public function __construct(
         AppointmentRepository $repository,
         PatientRepository $patientRepository,
-        HospitalRepository $hospitalRepository,
-        UserRepository $userRepository,
 
         ZoomApi $zoomApi
     ) {
         $this->repository = $repository;
         $this->patientRepository = $patientRepository;
-        $this->hospitalRepository = $hospitalRepository;
-        $this->userRepository = $userRepository;
         $this->zoomApi = $zoomApi;
     }
 
@@ -91,6 +85,31 @@ class AppointmentService
         $this->repository->delete($appointment);
     }
 
+    public function medicalInfo(int $appointmentId, array $data): ?Appointment
+    {
+        $appointment = $this->repository->findById($appointmentId);
+        if (empty($appointment)) {
+            return null;
+        }
+
+        if (isset($data['medical_notes'])) {
+            $appointment->medical_notes = $data['medical_notes'];
+        }
+        if (isset($data['prescription'])) {
+            $appointment->prescription = $data['prescription'];
+        }
+        if (isset($data['recommendations'])) {
+            $appointment->recommendations = $data['recommendations'];
+        }
+
+        if (isset($data['certificate'])) {
+            $appointment->certificate = $data['certificate'];
+        }
+
+        $appointment->save();
+
+        return $appointment;
+    }
 
     private function sendCreatedAppointmentEmail(Appointment $appointment)
     {

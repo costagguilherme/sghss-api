@@ -52,4 +52,13 @@ class AppointmentController extends Controller
         $this->service->cancel($id);
         return $this->sendSucess([], 'Consulta cancelada com sucesso');
     }
+
+    public function medicalInfo(Request $request, int $id): JsonResponse
+    {
+        $appointment = $this->service->medicalInfo($id, $request->all());
+        if (empty($appointment)) {
+            return $this->sendError('Consulta não encontrada', 404);
+        }
+        return $this->sendSucess($appointment->toArray(), 'Informações médicas gravadas com sucesso');
+    }
 }

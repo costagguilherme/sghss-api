@@ -42,3 +42,6 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
         Route::delete('/{id}', [AppointmentController::class, 'cancel']);
     });
 });
+
+
+Route::post('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
