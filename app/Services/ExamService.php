@@ -19,9 +19,10 @@ class ExamService
         $this->patientRepository = $patientRepository;
     }
 
-    public function getAll(int $hospital_id)
+    public function getAll(int $userId)
     {
-        return $this->repository->getAll($hospital_id);
+        $patient = $this->patientRepository->getPatientByUserId($userId);
+        return $this->repository->getAll($patient->id);
     }
 
     public function findById(int $id)
@@ -29,9 +30,9 @@ class ExamService
         return $this->repository->findById($id);
     }
 
-    public function getUserExam(int $id, $user_id): ?Exam
+    public function getUserExam(int $id, $userId): ?Exam
     {
-        $patient = $this->patientRepository->getPatientByUserId($user_id);
+        $patient = $this->patientRepository->getPatientByUserId($userId);
         $exam = $this->repository->findByIdAndPatient($id, $patient->id);
         if (!$exam) {
             return null;
@@ -68,6 +69,11 @@ class ExamService
 
     public function cancel(int $id)
     {
+        $exam = $this->repository->findById($id);
+        if (empty($exam)) {
+            return null;
+        }
+        $this->sendCancelAppointmentEmail($exam);
         return $this->repository->cancel($id);
     }
 
@@ -127,6 +133,20 @@ class ExamService
             Mail::raw($messageText, function ($message) use ($user) {
                 $message->to($user->email)
                     ->subject('SGHSS: EXAME CONFIRMADO');
+            });
+        }
+    }
+
+    private function sendCancelAppointmentEmail(Exam $exam)
+    {
+        $doctor = $exam->doctor;
+        $messageText = "Olá, o seu exame de {$exam->name} que estava agendada para às {$exam->scheduled_at} foi cancelado!\n\n";
+
+        $user = $exam->patient->user ?? null;
+        if ($user) {
+            Mail::raw($messageText, function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('SGHSS: EXAME CANCELADO');
             });
         }
     }

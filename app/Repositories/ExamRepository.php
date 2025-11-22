@@ -6,9 +6,9 @@ use App\Models\Exam;
 
 class ExamRepository
 {
-    public function getAll(int $hospital_id): Exam
+    public function getAll(int $patientId)
     {
-        return Exam::where('hospital_id', $hospital_id)->orderBy('id', 'desc')->get();
+        return Exam::where('patient_id', $patientId)->orderBy('id', 'desc')->get();
     }
 
     public function findById(int $id): Exam
