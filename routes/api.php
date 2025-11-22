@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
@@ -47,4 +48,18 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'doctormid'])->group(function () {
     Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
+});
+
+Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
+    Route::prefix('exams')->group(function () {
+
+        Route::get('/', [ExamController::class, 'getAll']);
+        Route::get('/{id}', [ExamController::class, 'getById']);
+
+        Route::post('/', [ExamController::class, 'schedule']);
+
+        Route::put('/{id}/cancel', [ExamController::class, 'cancel']);
+        Route::put('/{id}/report', [ExamController::class, 'addReport']);
+        Route::post('/{id}/result', [ExamController::class, 'addResult']);
+    });
 });
