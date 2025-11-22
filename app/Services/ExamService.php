@@ -54,6 +54,18 @@ class ExamService
         return $exam;
     }
 
+    public function setStatus(int $id, string $status)
+    {
+        $exam = $this->repository->findById($id);
+        if (empty($exam)) {
+            return null;
+        }
+        $exam->status = $status;
+        $exam->save();
+        $this->sendApprovedExamEmail($exam);
+        return $exam;
+    }
+
     public function cancel(int $id)
     {
         return $this->repository->cancel($id);
@@ -81,14 +93,40 @@ class ExamService
         $doctor = $exam->doctor;
         $doctorName = $doctor->user->name ?? '';
 
+        $hospitalName = $exam->hospital->name ?? 'Não definido';
+
         $messageText .= "Médico: {$doctorName}\n";
         $messageText .= "Exame: {$exam->name}\n";
+        $messageText .= "Local: {$hospitalName}\n";
+
 
         $user = $exam->patient->user ?? null;
         if ($user) {
             Mail::raw($messageText, function ($message) use ($user) {
                 $message->to($user->email)
                     ->subject('SGHSS: EXAME AGENDADO');
+            });
+        }
+    }
+
+    private function sendApprovedExamEmail(Exam $exam)
+    {
+        $messageText = "Olá, sua solicitação de exame foi confirmada! \n\n";
+        $messageText .= "Data/Hora: {$exam->scheduled_at}\n";
+        $doctor = $exam->doctor;
+        $doctorName = $doctor->user->name ?? '';
+
+        $hospitalName = $exam->hospital->name ?? 'Não definido';
+
+        $messageText .= "Médico: {$doctorName}\n";
+        $messageText .= "Exame: {$exam->name}\n";
+        $messageText .= "Local: {$hospitalName}\n";
+
+        $user = $exam->patient->user ?? null;
+        if ($user) {
+            Mail::raw($messageText, function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('SGHSS: EXAME CONFIRMADO');
             });
         }
     }

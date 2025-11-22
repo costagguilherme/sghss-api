@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum', 'adminmid'])->group(function () {
     Route::get('/patients/{id}', [PatientController::class, 'show']);
 
     Route::put('/appointments/{id}/status', [AppointmentController::class, 'status']);
+    Route::put('/exams/{id}/status', [ExamController::class, 'status']);
 });
 
 Route::post('/patients', [PatientController::class, 'store']);

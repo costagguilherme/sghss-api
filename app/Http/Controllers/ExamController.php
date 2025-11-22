@@ -50,6 +50,19 @@ class ExamController extends Controller
         }
     }
 
+    public function status(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,confirmed,rejected, canceled'
+        ]);
+
+        $appointment = $this->service->setStatus($id, $validated['status']);
+        if (empty($appointment)) {
+            return $this->sendError('Consulta não encontrada', 404);
+        }
+        return $this->sendSucess($appointment->toArray(), 'Status definido com sucesso');
+    }
+
     public function cancel(int $id): JsonResponse
     {
         $exam = $this->service->findById($id);
