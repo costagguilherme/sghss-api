@@ -7,6 +7,7 @@ use App\Repositories\ExamRepository;
 use App\Repositories\PatientRepository;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ExamService
 {
@@ -40,7 +41,7 @@ class ExamService
         return $exam;
     }
 
-    public function schedule(array $data)
+    public function schedule(array $data, $file)
     {
         if ($data['role'] == 'patient') {
             $patient = $this->patientRepository->getPatientByUserId($data['user_id']);
@@ -48,6 +49,9 @@ class ExamService
                 throw new Exception('Um paciente só pode marcar um exame para si mesmo');
             }
         }
+
+        $path = $file->store('requirements', 'public');
+        $data['requirement_url'] = Storage::disk('public')->url($path);
 
         $data['status'] = 'pending';
         $exam = $this->repository->create($data);

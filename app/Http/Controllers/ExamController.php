@@ -38,12 +38,16 @@ class ExamController extends Controller
             'description' => 'nullable|string',
             'patient_id' => 'required|exists:patients,id',
             'scheduled_at' => 'nullable|date',
-            'doctor_id' => 'required|integer'
+            'doctor_id' => 'required|integer',
+            'requirement_file' => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
+
         ]);
+
+        $file = $request->file('requirement_file');
 
         try {
             $data = array_merge($validated, ['user_id' => $this->getUserId(), 'role' => $this->getRole()]);
-            $exam = $this->service->schedule($data);
+            $exam = $this->service->schedule($data, $file);
             return $this->sendSucess($exam, 'Exame criado com sucesso', 201);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 400);

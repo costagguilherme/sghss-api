@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {
 Route::middleware(['auth:sanctum', 'doctormid'])->group(function () {
     Route::put('/appointments/{id}/medical-info', [AppointmentController::class, 'medicalInfo']);
     Route::put('/exams/{id}/report', [ExamController::class, 'addReport']);
-    Route::post('/{id}/result', [ExamController::class, 'addResult']);
+    Route::post('/exams/{id}/result', [ExamController::class, 'addResult']);
 });
 
 Route::middleware(['auth:sanctum', 'patientadminmid'])->group(function () {

@@ -18,6 +18,7 @@ class Exam extends Model
         'status',
         'doctor_id',
         'patient_id',
+        'requirement_url',
     ];
 
     public function doctor()
