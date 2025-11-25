@@ -14,10 +14,10 @@ class Exam extends Model
         'description',
         'scheduled_at',
         'report',
-        'result_file',
         'status',
         'doctor_id',
         'patient_id',
+        'result_file_url',
         'requirement_url',
     ];
 

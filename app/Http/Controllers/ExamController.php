@@ -94,11 +94,13 @@ class ExamController extends Controller
 
     public function addResult(Request $request, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'result_file' => 'required|file'
+        $request->validate([
+            'result_file' => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
-        $exam = $this->service->addResultFile($id, $validated['result_file']);
+        $file = $request->file('result_file');
+
+        $exam = $this->service->addResultFile($id, $file);
         if (empty($exam)) {
             return $this->sendError('Exame não encontrado', 404);
         }

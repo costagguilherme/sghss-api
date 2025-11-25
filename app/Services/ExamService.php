@@ -93,10 +93,13 @@ class ExamService
         ]);
     }
 
-    public function addResultFile(int $id, string $filePath)
+    public function addResultFile(int $id, $file)
     {
+        $path = $file->store('requirements', 'public');
+        $url = Storage::disk('public')->url($path);
+        
         return $this->repository->update($id, [
-            'result_file' => $filePath
+            'result_file_url' => $url
         ]);
     }
 
