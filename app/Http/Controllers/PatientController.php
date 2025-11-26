@@ -24,7 +24,16 @@ class PatientController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $patient = $this->service->getById($id);
+        $role = $this->getRole();
+        if ($role == 'admin') {
+            $patient = $this->service->getById($id);
+        } else {
+            $patient = $this->service->getPatientByUserId($this->getUserId());
+            if ($id != $patient->id) {
+                $patient = null;
+            }
+        }
+
         if (empty($patient)) {
             return $this->sendError('Patient not found', 404);
         }

@@ -26,6 +26,11 @@ class PatientService
         return $this->repository->getAll();
     }
 
+    public function getPatientByUserId(int $userId): ?Patient
+    {
+        return $this->repository->getPatientByUserId($userId);
+    }
+
     public function getById(int $id): ?Patient
     {
         $patient = $this->repository->findById($id);
