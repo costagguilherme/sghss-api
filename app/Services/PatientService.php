@@ -35,7 +35,7 @@ class PatientService
         return $patient;
     }
 
-    public function create(array $data): Patient
+    public function create(array $data): array
     {
         $userData = [
             'name' => $data['name'],
@@ -47,7 +47,11 @@ class PatientService
 
         $user = $this->userRepository->create($userData);
         $data['user_id'] = $user->id;
-        return $this->repository->create($data);
+        $response = $this->repository->create($data);
+        $response = $response->toArray();
+        $response['email'] = $user->email;
+        $response['name'] = $user->name;
+        return $response;
     }
 
     public function update(int $id, array $data): Patient

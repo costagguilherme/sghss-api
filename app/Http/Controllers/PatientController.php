@@ -34,7 +34,7 @@ class PatientController extends Controller
     public function store(PatientRequest $request): JsonResponse
     {
         $patient = $this->service->create($request->validated());
-        return $this->sendSucess($patient->toArray(), 'Paciente criado com successo', 201);
+        return $this->sendSucess($patient, 'Paciente criado com successo', 201);
     }
 
     public function update(PatientRequest $request, int $id): JsonResponse

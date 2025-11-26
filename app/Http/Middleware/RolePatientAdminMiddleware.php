@@ -14,7 +14,7 @@ class RolePatientAdminMiddleware
 
         if ($user->role !== RoleEnum::PATIENT->value && $user->role !== RoleEnum::ADMIN->value) {
             return response()->json([
-                'message' => 'Não autorizado, não é paciente e nem admin'
+                'message' => 'Usúario não autorizado para esta rota'
             ], 403);
         }
 

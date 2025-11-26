@@ -51,7 +51,7 @@ class AppointmentController extends Controller
 
     public function cancel(int $id): JsonResponse
     {
-        $appointment = $this->service->getUserAppointment($id, $this->getUserId());
+        $appointment = $this->service->getActiveUserAppointment($id, $this->getUserId());
         if (empty($appointment)) {
             return $this->sendError('Consulta não encontrada', 404);
         }

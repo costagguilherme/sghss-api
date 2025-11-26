@@ -80,7 +80,17 @@ class AppointmentService
         return $appointment;
     }
 
-    public function cancel(int $id): Appointment
+    public function getActiveUserAppointment(int $id, $user_id): ?Appointment
+    {
+        $patient = $this->patientRepository->getPatientByUserId($user_id);
+        $appointment = $this->repository->findActiveByIdAndPatient($id, $patient->id);
+        if (!$appointment) {
+            return null;
+        }
+        return $appointment;
+    }
+
+    public function cancel(int $id): ?Appointment
     {
         $appointment = $this->repository->findById($id);
         if ($appointment->type == 'online') {

@@ -22,6 +22,12 @@ class AppointmentRepository
         return $query->first();
     }
 
+    public function findActiveByIdAndPatient(int $id, int $patientId): ?Appointment
+    {
+        $query = Appointment::where('id', $id)->where('patient_id', $patientId)->where('status', 'active');
+        return $query->first();
+    }
+
     public function create(array $data): Appointment
     {
         return Appointment::create($data);
