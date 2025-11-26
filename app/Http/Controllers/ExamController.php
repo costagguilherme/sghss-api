@@ -40,7 +40,6 @@ class ExamController extends Controller
             'scheduled_at' => 'nullable|date',
             'doctor_id' => 'required|integer',
             'requirement_file' => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
-
         ]);
 
         $file = $request->file('requirement_file');

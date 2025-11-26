@@ -50,9 +50,8 @@ class ExamService
             }
         }
 
-        $path = $file->store('requirements', 'public');
-        $data['requirement_url'] = Storage::disk('public')->url($path);
-
+        $path = $file->store('requirements', 's3');
+        $data['requirement_url'] = url(Storage::url($path));
         $data['status'] = 'pending';
         $exam = $this->repository->create($data);
         $this->sendCreatedExamEmail($exam);
@@ -95,9 +94,9 @@ class ExamService
 
     public function addResultFile(int $id, $file)
     {
-        $path = $file->store('requirements', 'public');
-        $url = Storage::disk('public')->url($path);
-        
+        $path = $file->store('results', 's3');
+        $url = url(Storage::url($path));
+
         return $this->repository->update($id, [
             'result_file_url' => $url
         ]);
